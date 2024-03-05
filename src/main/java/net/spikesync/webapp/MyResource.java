@@ -1,4 +1,4 @@
-package net.spikesync;
+package net.spikesync.webapp;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
