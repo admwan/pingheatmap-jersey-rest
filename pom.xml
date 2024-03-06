@@ -52,11 +52,33 @@
 		<jakarta.security.enterprise-api.version>3.0.0</jakarta.security.enterprise-api.version>
 		<amqp-client.version>5.7.3</amqp-client.version>
 		<spring-rabbit.version>3.0.9</spring-rabbit.version>
+		
+		<appFinalName>pingheatmap-jersey-rest</appFinalName>
 
 	</properties>
 
 	<build>
-		<finalName>pingheatmap-jersey-rest</finalName>
+		
+			<finalName>${appFinalName}</finalName>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.properties</include>
+					<include>StrolchBootstrap.xml</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>**/*.properties</exclude>
+					<exclude>StrolchBootstrap.xml</exclude>
+				</excludes>
+			</resource>
+		</resources>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -100,6 +122,10 @@
 		</plugins>
 	</build>
 
+	
+
+
+
 	<!-- Dependency management seems rather redundant. In Properties the versions for the appropriate libraries are
 		defined, then in the element <dependencyManagement the libraries with their versions are mentioned and in the 
 		element <dependencies> the libraries are repeated but then without version element in them -->
@@ -113,7 +139,25 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			
+			<!-- dependencies according to
+			https://stackoverflow.com/questions/65703840/how-to-properly-configure-jakarta-ee-libraries-in-maven-pom-xml-for-tomcat 
 
+			<dependency>
+				<groupId>jakarta.servlet</groupId>
+				<artifactId>jakarta.servlet-api</artifactId>
+				<version>${jakarta.servlet-api.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>jakarta.servlet.jsp</groupId>
+				<artifactId>jakarta.servlet.jsp-api</artifactId>
+				<version>${jakarta.servlet.jsp-api.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			-->
+			
 			<dependency>
 				<groupId>com.zaxxer</groupId>
 				<artifactId>HikariCP</artifactId>
@@ -154,22 +198,9 @@
 			</dependency>
 
 
-			<!-- dependencies according to
-			https://stackoverflow.com/questions/65703840/how-to-properly-configure-jakarta-ee-libraries-in-maven-pom-xml-for-tomcat -->
 
-			<dependency>
-				<groupId>jakarta.servlet</groupId>
-				<artifactId>jakarta.servlet-api</artifactId>
-				<version>${jakarta.servlet-api.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>jakarta.servlet.jsp</groupId>
-				<artifactId>jakarta.servlet.jsp-api</artifactId>
-				<version>${jakarta.servlet.jsp-api.version}</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
+			
+			<dependency>				
 				<groupId>jakarta.el</groupId>
 				<artifactId>jakarta.el-api</artifactId>
 				<version>${jakarta.el-api.version}</version>
@@ -220,6 +251,9 @@
 		</dependencies>
 	</dependencyManagement>
 
+	<!-- ACTUAL dependencies -->
+	<!-- =================================== -->
+
 	<dependencies>
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
@@ -229,18 +263,41 @@
 			<!-- artifactId>jersey-container-servlet</artifactId -->
 		</dependency>
 
-		<dependency>
-			<groupId>org.glassfish.jersey.inject</groupId>
-			<artifactId>jersey-hk2</artifactId>
-		</dependency>
+			
 
-		<!--
-		https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api -->
+			<!-- Servlet 2.x dependencies! 
+			Should NOT uses these! 
+				https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api 
+			
 		<dependency>
 			<groupId>jakarta.servlet</groupId>
 			<artifactId>jakarta.servlet-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
+			<dependency>
+				<groupId>jakarta.servlet.jsp</groupId>
+				<artifactId>jakarta.servlet.jsp-api</artifactId>
+				<scope>provided</scope>
+			</dependency>
+			
+			-->
+				<dependency>
+			<groupId>org.glassfish.jersey.inject</groupId>
+			<artifactId>jersey-hk2</artifactId>
+		</dependency>
+
+
+			<dependency>
+				<groupId>jakarta.el</groupId>
+				<artifactId>jakarta.el-api</artifactId>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>jakarta.servlet.jsp.jstl</groupId>
+				<artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+				<scope>provided</scope>
+			</dependency>
 
 		<!-- https://mvnrepository.com/artifact/jakarta.ws.rs/jakarta.ws.rs-api -->
 		<dependency>
