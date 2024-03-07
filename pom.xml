@@ -52,14 +52,19 @@
 		<jakarta.security.enterprise-api.version>3.0.0</jakarta.security.enterprise-api.version>
 		<amqp-client.version>5.7.3</amqp-client.version>
 		<spring-rabbit.version>3.0.9</spring-rabbit.version>
-		
+
+		<!-- Version for Tomcat deployment plugin -->
+
+		<tomcat7-maven-plugin.version>2.2</tomcat7-maven-plugin.version>
+
+
 		<appFinalName>pingheatmap-jersey-rest</appFinalName>
 
 	</properties>
 
 	<build>
-		
-			<finalName>${appFinalName}</finalName>
+
+		<finalName>${appFinalName}</finalName>
 
 		<resources>
 			<resource>
@@ -99,6 +104,18 @@
 						<warName>${appFinalName}-${project.version}</warName>
 					</configuration>
 				</plugin>
+				<plugin>
+					<!-- Publish to Tomcat7: mvn tomcat7:redeploy -->
+					<groupId>org.apache.tomcat.maven</groupId>
+					<artifactId>tomcat7-maven-plugin</artifactId>
+					<version>${tomcat7-maven-plugin.version}</version>
+					<configuration>
+						<url>${tomcat7Url}</url>
+						<server>${tomcat7ServerId}</server>
+						<path>/${appFinalName}</path>
+					</configuration>
+				</plugin>
+
 
 			</plugins>
 		</pluginManagement>
@@ -118,17 +135,21 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+			</plugin>
 
 		</plugins>
 	</build>
 
-	
 
-
-
-	<!-- Dependency management seems rather redundant. In Properties the versions for the appropriate libraries are
-		defined, then in the element <dependencyManagement the libraries with their versions are mentioned and in the 
-		element <dependencies> the libraries are repeated but then without version element in them -->
+	<!-- Dependency management seems rather redundant. In Properties the
+	versions for the appropriate libraries are
+		defined, then in the element <dependencyManagement the libraries with their
+	versions are mentioned and in the 
+		element <dependencies> the libraries are repeated but then without version
+	element in them -->
 
 	<dependencyManagement>
 		<dependencies>
@@ -139,7 +160,7 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			
+
 			<!-- dependencies according to
 			https://stackoverflow.com/questions/65703840/how-to-properly-configure-jakarta-ee-libraries-in-maven-pom-xml-for-tomcat 
 
@@ -157,7 +178,7 @@
 				<scope>provided</scope>
 			</dependency>
 			-->
-			
+
 			<dependency>
 				<groupId>com.zaxxer</groupId>
 				<artifactId>HikariCP</artifactId>
@@ -198,9 +219,7 @@
 			</dependency>
 
 
-
-			
-			<dependency>				
+			<dependency>
 				<groupId>jakarta.el</groupId>
 				<artifactId>jakarta.el-api</artifactId>
 				<version>${jakarta.el-api.version}</version>
@@ -263,9 +282,8 @@
 			<!-- artifactId>jersey-container-servlet</artifactId -->
 		</dependency>
 
-			
 
-			<!-- Servlet 2.x dependencies! 
+		<!-- Servlet 2.x dependencies! 
 			Should NOT uses these! 
 				https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api 
 			
@@ -281,23 +299,23 @@
 			</dependency>
 			
 			-->
-				<dependency>
+		<dependency>
 			<groupId>org.glassfish.jersey.inject</groupId>
 			<artifactId>jersey-hk2</artifactId>
 		</dependency>
 
 
-			<dependency>
-				<groupId>jakarta.el</groupId>
-				<artifactId>jakarta.el-api</artifactId>
-				<scope>provided</scope>
-			</dependency>
+		<dependency>
+			<groupId>jakarta.el</groupId>
+			<artifactId>jakarta.el-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
-			<dependency>
-				<groupId>jakarta.servlet.jsp.jstl</groupId>
-				<artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-				<scope>provided</scope>
-			</dependency>
+		<dependency>
+			<groupId>jakarta.servlet.jsp.jstl</groupId>
+			<artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/jakarta.ws.rs/jakarta.ws.rs-api -->
 		<dependency>
