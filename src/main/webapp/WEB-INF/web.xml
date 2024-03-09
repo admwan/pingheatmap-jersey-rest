@@ -5,10 +5,16 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
 	version="5.0">
-	<welcome-file-list>
-		<welcome-file>timpepage.jsp</welcome-file>
-	</welcome-file-list>
-
+	<servlet>
+		<servlet-name>TimePage</servlet-name>
+		<jsp-file>/timepage.jsp</jsp-file>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>TimePage</servlet-name>
+		<url-pattern>/main</url-pattern>
+	</servlet-mapping>
+ 
+<!-- 
 	<servlet>
 		<servlet-name>UserServlet</servlet-name>
 		<servlet-class>net.spikesync.webapp.UserServlet</servlet-class>
@@ -18,15 +24,7 @@
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 
-	<servlet>
-		<servlet-name>MyResource</servlet-name>
-		<servlet-class>net.spikesync.webapp.MyResource</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>MyResource</servlet-name>
-		<url-pattern>/timepage.jsp</url-pattern>
-	</servlet-mapping>
-
+-->
 
 	<listener>
 		<listener-class>net.spikesync.webapp.PingHeatAppThreadContextListener</listener-class>
