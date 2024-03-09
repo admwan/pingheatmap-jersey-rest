@@ -14,17 +14,16 @@
 		<url-pattern>/main</url-pattern>
 	</servlet-mapping>
  
-<!-- 
+
 	<servlet>
 		<servlet-name>UserServlet</servlet-name>
 		<servlet-class>net.spikesync.webapp.UserServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>UserServlet</servlet-name>
-		<url-pattern>/*</url-pattern>
+		<url-pattern>/jsonpage</url-pattern>
 	</servlet-mapping>
 
--->
 
 	<listener>
 		<listener-class>net.spikesync.webapp.PingHeatAppThreadContextListener</listener-class>
