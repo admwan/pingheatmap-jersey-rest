@@ -7,12 +7,37 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import jakarta.servlet.ServletContext;
+
 public class PropertiesLoader {
-	
-	private static final Logger logger = LoggerFactory.getLogger(PingMsgReader.class);
-	private static String FILENAME_PROPERTIES = "new_no_springboot.properties";
-	
-    public static Properties loadProperties() { 
+
+	private static final Logger logger = LoggerFactory.getLogger(PropertiesLoader.class);
+	private static String FILENAME_PROPERTIES = "/WEB-INF/new_no_springboot.properties";
+	private ServletContext servletContext;
+
+	public PropertiesLoader(ServletContext sCtx) {
+		this.servletContext = sCtx;
+	}
+
+	public Properties loadProperties() {
+		Properties configuration = new Properties();
+
+		try (InputStream inputStream = servletContext.getResourceAsStream(FILENAME_PROPERTIES)) {
+			if (inputStream != null) {
+				configuration.load(inputStream);
+			} else {
+				System.out.println("Properties file not found!");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return configuration;
+
+	}
+}
+/***** Below is the original body of the method *************/
+/*  
+  	public static Properties loadProperties() { 
         Properties configuration = new Properties();
         InputStream inputStream = PropertiesLoader.class
           .getClassLoader()
@@ -31,4 +56,27 @@ public class PropertiesLoader {
 		}
         return configuration;
     }
-}
+
+ * 
+ * !!!!!!!! This is the main difference with
+ * PingerdaemonRabbitmqClientApplication !!!!!!!!!! 
+ * The properties are being read through the classloader method. 
+ * In general there are two methods to read the properties file:
+ * 
+ * PropertiesLoader loader = new PropertiesLoader();
+ * 
+ * --> Using ClassLoader Properties propertiesFromClasspath =
+ * loader.loadPropertiesFromClasspath("yourfile.properties");
+ * 
+ * --> Using ServletContext Properties propertiesFromServletContext =
+ * loader.loadPropertiesFromServletContext(servletContext,
+ * "yourfile.properties");
+ * 
+ * InputStream inputStream = PropertiesLoader.class .getClassLoader()
+ * .getResourceAsStream(FILENAME_PROPERTIES);
+ * 
+ * 
+ * 
+ * 
+ 
+ */
