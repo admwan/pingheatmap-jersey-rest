@@ -38,7 +38,7 @@
 		<maven-project-info-reports-plugin.version>3.1.0</maven-project-info-reports-plugin.version>
 		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
 
-		<jakarta.servlet-api.version>6.1.0-M2</jakarta.servlet-api.version>
+		<jakarta.servlet-api.version>6.1.0-M1</jakarta.servlet-api.version>
 		<jakarta.servlet.jsp-api.version>3.1.0</jakarta.servlet.jsp-api.version>
 
 		<!-- Jakarta Expression Language API -->
@@ -48,7 +48,7 @@
 		<jakarta.servlet.jsp.jstl-api.version>3.0.0</jakarta.servlet.jsp.jstl-api.version>
 		<jakarta.servlet.jsp.jstl.version>3.0.0</jakarta.servlet.jsp.jstl.version>
 		<jakarta.enterprise.concurrent.version>3.1.0-M2</jakarta.enterprise.concurrent.version>
-		
+
 		<jakarta.jakartaee-api.version>9.1.0</jakarta.jakartaee-api.version>
 
 		<jakarta.websocket-api.version>2.1.0</jakarta.websocket-api.version>
@@ -69,7 +69,7 @@
 
 		<finalName>${appFinalName}</finalName>
 
-<!-- No idea what the <resources/> element is used for
+		<!-- No idea what the <resources/> element is used for -->
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -89,7 +89,7 @@
 			</resource>
 		</resources>
 		
-		-->
+		
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -168,22 +168,22 @@
 			</dependency>
 
 			<!-- dependencies according to
-			https://stackoverflow.com/questions/65703840/how-to-properly-configure-jakarta-ee-libraries-in-maven-pom-xml-for-tomcat 
+			https://stackoverflow.com/questions/65703840/how-to-properly-configure-jakarta-ee-libraries-in-maven-pom-xml-for-tomcat -->
 
 			<dependency>
 				<groupId>jakarta.servlet</groupId>
 				<artifactId>jakarta.servlet-api</artifactId>
 				<version>${jakarta.servlet-api.version}</version>
-				<scope>provided</scope>
+				<scope>provided</scope> 
 			</dependency>
-			
+
 			<dependency>
 				<groupId>jakarta.servlet.jsp</groupId>
 				<artifactId>jakarta.servlet.jsp-api</artifactId>
 				<version>${jakarta.servlet.jsp-api.version}</version>
 				<scope>provided</scope>
 			</dependency>
-			-->
+
 
 			<dependency>
 				<groupId>com.zaxxer</groupId>
@@ -245,7 +245,7 @@
 				<groupId>jakarta.enterprise.concurrent</groupId>
 				<artifactId>jakarta.enterprise.concurrent-api</artifactId>
 				<version>${jakarta.enterprise.concurrent.version}</version>
-				<scope>provided</scope>
+	<!--			<scope>provided</scope> -->
 			</dependency>
 
 			<!--
@@ -307,26 +307,16 @@
 		</dependency>
 
 
-		<!-- Servlet 2.x dependencies! 
-			Should NOT uses these! 
-				https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api 
-			
-		<dependency>
-			<groupId>jakarta.servlet</groupId>
-			<artifactId>jakarta.servlet-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
-			<dependency>
-				<groupId>jakarta.servlet.jsp</groupId>
-				<artifactId>jakarta.servlet.jsp-api</artifactId>
-				<scope>provided</scope>
-			</dependency>
-			
-			-->
 		<dependency>
 			<groupId>org.glassfish.jersey.inject</groupId>
 			<artifactId>jersey-hk2</artifactId>
 		</dependency>
+
+			<dependency>
+				<groupId>jakarta.servlet</groupId>
+				<artifactId>jakarta.servlet-api</artifactId>
+				<scope>provided</scope> 
+			</dependency>
 
 
 		<dependency>
@@ -348,11 +338,11 @@
 			<scope>provided</scope>
 		</dependency>
 
-			<dependency>
-				<groupId>jakarta.platform</groupId>
-				<artifactId>jakarta.jakartaee-api</artifactId>
-				<scope>provided</scope>
-			</dependency>
+		<dependency>
+			<groupId>jakarta.platform</groupId>
+			<artifactId>jakarta.jakartaee-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/jakarta.ws.rs/jakarta.ws.rs-api -->
 		<dependency>

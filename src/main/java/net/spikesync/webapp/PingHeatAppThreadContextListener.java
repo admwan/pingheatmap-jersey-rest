@@ -18,14 +18,14 @@ import net.spikesync.pingerdaemonrabbitmqclient.PingMsgReaderRunnable;
 import net.spikesync.pingerdaemonrabbitmqclient.PropertiesLoader;
 
 import jakarta.enterprise.concurrent.ManagedExecutorService;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import jakarta.naming.Context;
+import jakarta.naming.InitialContext;
+import jakarta.naming.NamingException;
 
 
 public class PingHeatAppThreadContextListener implements ServletContextListener {
 
-	private PingMsgReaderRunnable pingMsgReaderRunnable;
+	private PingMsgReaderRunnable pingMessageReaderTask;
 	private static final Logger logger = LoggerFactory.getLogger(PingHeatAppThreadContextListener.class);
 
 	@Override
@@ -44,17 +44,20 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
  		}
  		try {
  			Context ctx = new InitialContext();
+            ManagedExecutorService managedExecutorService = (ManagedExecutorService) ctx.lookup("java:comp/DefaultManagedExecutorService");
+
+            managedExecutorService.submit(pingMessageReaderTask);
  		}
  		catch (NamingException e) {
  			e.printStackTrace();
  		}
-		pingMsgReaderRunnable = new PingMsgReaderRunnable();
-		logger.debug("Started pingMsgReaderRunnable");
+		pingMessageReaderTask = new PingMsgReaderRunnable();
+		logger.debug("Started pingMessageReaderTask");
 		
 	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
-		pingMsgReaderRunnable.notify();
+		pingMessageReaderTask.notify();
 	}
 }
