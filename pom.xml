@@ -47,6 +47,9 @@
 		<!-- Jakarta Standard Tag Library API -->
 		<jakarta.servlet.jsp.jstl-api.version>3.0.0</jakarta.servlet.jsp.jstl-api.version>
 		<jakarta.servlet.jsp.jstl.version>3.0.0</jakarta.servlet.jsp.jstl.version>
+		<jakarta.enterprise.concurrent.version>3.1.0-M2</jakarta.enterprise.concurrent.version>
+		
+		<jakarta.jakartaee-api.version>9.1.0</jakarta.jakartaee-api.version>
 
 		<jakarta.websocket-api.version>2.1.0</jakarta.websocket-api.version>
 		<jakarta.security.enterprise-api.version>3.0.0</jakarta.security.enterprise-api.version>
@@ -66,6 +69,7 @@
 
 		<finalName>${appFinalName}</finalName>
 
+<!-- No idea what the <resources/> element is used for
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -84,6 +88,8 @@
 				</excludes>
 			</resource>
 		</resources>
+		
+		-->
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -233,6 +239,24 @@
 				<scope>provided</scope>
 			</dependency>
 
+			<!--
+			https://mvnrepository.com/artifact/jakarta.enterprise.concurrent/jakarta.enterprise.concurrent-api -->
+			<dependency>
+				<groupId>jakarta.enterprise.concurrent</groupId>
+				<artifactId>jakarta.enterprise.concurrent-api</artifactId>
+				<version>${jakarta.enterprise.concurrent.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<!--
+			https://mvnrepository.com/artifact/jakarta.platform/jakarta.jakartaee-api -->
+			<dependency>
+				<groupId>jakarta.platform</groupId>
+				<artifactId>jakarta.jakartaee-api</artifactId>
+				<version>${jakarta.jakartaee-api.version}</version>
+				<scope>provided</scope>
+			</dependency>
+
 			<!-- Below is supposed to be the IMPLEMENTATION of the JSTL API -->
 
 			<dependency>
@@ -316,6 +340,19 @@
 			<artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
+
+		<dependency>
+			<groupId>jakarta.enterprise.concurrent</groupId>
+			<artifactId>jakarta.enterprise.concurrent-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+			<dependency>
+				<groupId>jakarta.platform</groupId>
+				<artifactId>jakarta.jakartaee-api</artifactId>
+				<scope>provided</scope>
+			</dependency>
 
 		<!-- https://mvnrepository.com/artifact/jakarta.ws.rs/jakarta.ws.rs-api -->
 		<dependency>

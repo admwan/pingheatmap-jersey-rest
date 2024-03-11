@@ -5,8 +5,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
 	version="5.0">
-	
-		<servlet>
+
+	<servlet>
 		<servlet-name>LuckyDayPage</servlet-name>
 		<jsp-file>/luckyday.jsp</jsp-file>
 	</servlet>
@@ -15,7 +15,7 @@
 		<url-pattern>/luckyday</url-pattern>
 	</servlet-mapping>
 
-	
+
 	<servlet>
 		<servlet-name>TimePage</servlet-name>
 		<jsp-file>/timepage.jsp</jsp-file>
@@ -24,7 +24,7 @@
 		<servlet-name>TimePage</servlet-name>
 		<url-pattern>/timepage</url-pattern>
 	</servlet-mapping>
- 
+
 	<servlet>
 		<servlet-name>UserServlet</servlet-name>
 		<servlet-class>net.spikesync.webapp.UserServlet</servlet-class>
@@ -33,7 +33,6 @@
 		<servlet-name>UserServlet</servlet-name>
 		<url-pattern>/jsonpage</url-pattern>
 	</servlet-mapping>
-
 
 	<listener>
 		<listener-class>net.spikesync.webapp.PingHeatAppThreadContextListener</listener-class>

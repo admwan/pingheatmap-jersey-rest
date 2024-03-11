@@ -3,6 +3,8 @@ package net.spikesync.webapp;
 import java.io.InputStream;
 import java.util.Properties;
 
+import javax.naming.NamingException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,12 +14,18 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import net.spikesync.pingerdaemonrabbitmqclient.PingHeatMap;
 import net.spikesync.pingerdaemonrabbitmqclient.PingMsgReader;
-import net.spikesync.pingerdaemonrabbitmqclient.PingMsgReaderThread;
+import net.spikesync.pingerdaemonrabbitmqclient.PingMsgReaderRunnable;
 import net.spikesync.pingerdaemonrabbitmqclient.PropertiesLoader;
+
+import jakarta.enterprise.concurrent.ManagedExecutorService;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 
 public class PingHeatAppThreadContextListener implements ServletContextListener {
 
-	private PingMsgReaderThread pingMsgReaderThread;
+	private PingMsgReaderRunnable pingMsgReaderRunnable;
 	private static final Logger logger = LoggerFactory.getLogger(PingHeatAppThreadContextListener.class);
 
 	@Override
@@ -34,13 +42,19 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
  			logger.debug("All properties: ");
  			prop.list(System.out);
  		}
-		pingMsgReaderThread = new PingMsgReaderThread();
-		pingMsgReaderThread.start();
-		System.out.println("Started pingMsgReaderThread");
+ 		try {
+ 			Context ctx = new InitialContext();
+ 		}
+ 		catch (NamingException e) {
+ 			e.printStackTrace();
+ 		}
+		pingMsgReaderRunnable = new PingMsgReaderRunnable();
+		logger.debug("Started pingMsgReaderRunnable");
+		
 	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
-		pingMsgReaderThread.interrupt();
+		pingMsgReaderRunnable.notify();
 	}
 }
