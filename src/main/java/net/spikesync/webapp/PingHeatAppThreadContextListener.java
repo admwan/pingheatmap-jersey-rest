@@ -17,10 +17,11 @@ import net.spikesync.pingerdaemonrabbitmqclient.PingMsgReader;
 import net.spikesync.pingerdaemonrabbitmqclient.PingMsgReaderRunnable;
 import net.spikesync.pingerdaemonrabbitmqclient.PropertiesLoader;
 
-import jakarta.enterprise.concurrent.ManagedExecutorService;
-import jakarta.naming.Context;
-import jakarta.naming.InitialContext;
-import jakarta.naming.NamingException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.util.concurrent.ExecutorService;
+
 
 
 public class PingHeatAppThreadContextListener implements ServletContextListener {
@@ -44,7 +45,7 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
  		}
  		try {
  			Context ctx = new InitialContext();
-            ManagedExecutorService managedExecutorService = (ManagedExecutorService) ctx.lookup("java:comp/DefaultManagedExecutorService");
+            ExecutorService managedExecutorService = (ExecutorService) ctx.lookup("java:comp/DefaultManagedExecutorService");
 
             managedExecutorService.submit(pingMessageReaderTask);
  		}
