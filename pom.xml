@@ -55,6 +55,7 @@
 		<jakarta.security.enterprise-api.version>3.0.0</jakarta.security.enterprise-api.version>
 		<amqp-client.version>5.7.3</amqp-client.version>
 		<spring-rabbit.version>3.0.9</spring-rabbit.version>
+		<tomcat.catalina.version>11.0.0-M17</tomcat.catalina.version>
 
 		<!-- Version for Tomcat deployment plugin -->
 
@@ -88,8 +89,8 @@
 				</excludes>
 			</resource>
 		</resources>
-		
-		
+
+
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -174,7 +175,7 @@
 				<groupId>jakarta.servlet</groupId>
 				<artifactId>jakarta.servlet-api</artifactId>
 				<version>${jakarta.servlet-api.version}</version>
-				<scope>provided</scope> 
+				<scope>provided</scope>
 			</dependency>
 
 			<dependency>
@@ -245,7 +246,7 @@
 				<groupId>jakarta.enterprise.concurrent</groupId>
 				<artifactId>jakarta.enterprise.concurrent-api</artifactId>
 				<version>${jakarta.enterprise.concurrent.version}</version>
-	<!--			<scope>provided</scope> -->
+				<!--			<scope>provided</scope> -->
 			</dependency>
 
 			<!--
@@ -290,6 +291,13 @@
 				<version>${spring-rabbit.version}</version>
 			</dependency>
 
+			<!--
+			https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-catalina -->
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-catalina</artifactId>
+				<version>${tomcat.catalina.version}</version>
+			</dependency>
 
 		</dependencies>
 	</dependencyManagement>
@@ -312,11 +320,11 @@
 			<artifactId>jersey-hk2</artifactId>
 		</dependency>
 
-			<dependency>
-				<groupId>jakarta.servlet</groupId>
-				<artifactId>jakarta.servlet-api</artifactId>
-				<scope>provided</scope> 
-			</dependency>
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
 
 		<dependency>
@@ -394,6 +402,12 @@
 			<groupId>org.springframework.amqp</groupId>
 			<artifactId>spring-rabbit</artifactId>
 		</dependency>
+
+
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-catalina</artifactId>
+			</dependency>
 
 		<!-- JSON support 
 		

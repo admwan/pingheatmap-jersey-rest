@@ -22,6 +22,12 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.util.concurrent.ExecutorService;
 
+import org.apache.catalina.Executor;
+import org.apache.catalina.core.StandardThreadExecutor;
+
+import javax.management.*;
+//import org.apache.catalina.ServerFactory;
+import org.apache.catalina.Executor;
 
 
 public class PingHeatAppThreadContextListener implements ServletContextListener {
@@ -33,6 +39,7 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 	public void contextInitialized(ServletContextEvent sce) {
 
 		ServletContext servletContext = sce.getServletContext();
+		pingMessageReaderTask = new PingMsgReaderRunnable();
 
 		PropertiesLoader propLoader = new PropertiesLoader(servletContext);
 		Properties prop = propLoader.loadProperties();
@@ -43,19 +50,29 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
  			logger.debug("All properties: ");
  			prop.list(System.out);
  		}
+ 		/* The code below tries to retrieve an ExecutorService from the Tomcat server, but the lookup fails. 
+ 		 * Also, I can't find anything useful on how to fix the lookup, so trying something else 
+ 		 
  		try {
  			Context ctx = new InitialContext();
             ExecutorService managedExecutorService = (ExecutorService) ctx.lookup("java:comp/DefaultManagedExecutorService");
 
             managedExecutorService.submit(pingMessageReaderTask);
+    		logger.debug("Started pingMessageReaderTask");
+
  		}
  		catch (NamingException e) {
  			e.printStackTrace();
  		}
-		pingMessageReaderTask = new PingMsgReaderRunnable();
-		logger.debug("Started pingMessageReaderTask");
-		
-	}
+		*/
+ 		/* The method below is too far fetched. A better solution is to use Spring
+ 		 MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+         ObjectName name = new ObjectName("Catalina:type=Server");
+         org.apache.catalina.Server server = (org.apache.catalina.Server) mBeanServer.getAttribute(name, "managedResource");
+         Executor executor = server.findExecutor("myExecutor");	
+		*/
+         Executor managedExecutorService = new StandardThreadExecutor();
+ 	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
