@@ -20,7 +20,11 @@ import net.spikesync.pingerdaemonrabbitmqclient.PropertiesLoader;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.catalina.Executor;
 import org.apache.catalina.core.StandardThreadExecutor;
@@ -34,6 +38,7 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 
 	private PingMsgReaderRunnable pingMessageReaderTask;
 	private static final Logger logger = LoggerFactory.getLogger(PingHeatAppThreadContextListener.class);
+	private ThreadPoolExecutor executor;
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
@@ -71,11 +76,18 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
          org.apache.catalina.Server server = (org.apache.catalina.Server) mBeanServer.getAttribute(name, "managedResource");
          Executor executor = server.findExecutor("myExecutor");	
 		*/
-         Executor managedExecutorService = new StandardThreadExecutor();
+ 	     this.executor = new ThreadPoolExecutor(
+ 	            5, // corePoolSize
+ 	            10, // maximumPoolSize
+ 	            60, // keepAliveTime
+ 	            TimeUnit.SECONDS, // timeUnit
+ 	            new ArrayBlockingQueue<Runnable>(10) // workQueue
+ 	        );
+         executor.execute(pingMessageReaderTask);
  	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
-		pingMessageReaderTask.notify();
+		executor.shutdown();
 	}
 }
