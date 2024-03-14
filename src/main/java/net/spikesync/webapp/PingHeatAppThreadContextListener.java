@@ -1,6 +1,7 @@
 package net.spikesync.webapp;
 
 import java.io.InputStream;
+import java.rmi.registry.Registry;
 import java.util.Properties;
 
 import javax.naming.NamingException;
@@ -27,12 +28,14 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.catalina.Executor;
+import org.apache.catalina.core.StandardServer;
+import org.apache.catalina.core.StandardService;
 import org.apache.catalina.core.StandardThreadExecutor;
+import org.apache.catalina.Service;
 
 import javax.management.*;
 //import org.apache.catalina.ServerFactory;
 import org.apache.catalina.Executor;
-
 
 public class PingHeatAppThreadContextListener implements ServletContextListener {
 
@@ -48,46 +51,48 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 
 		PropertiesLoader propLoader = new PropertiesLoader(servletContext);
 		Properties prop = propLoader.loadProperties();
- 		if(prop == null) 
- 			logger.debug("************** ========= Properties not loaded! Check the name of the properties file! ************** ========= ");
- 		else {
- 			logger.debug("************** ========= Property test-silvercloud-scnodes is set to: "  + prop.getProperty("test-silvercloud-scnodes"));
- 			logger.debug("All properties: ");
- 			prop.list(System.out);
- 		}
- 		/* The code below tries to retrieve an ExecutorService from the Tomcat server, but the lookup fails. 
- 		 * Also, I can't find anything useful on how to fix the lookup, so trying something else 
- 		 
- 		try {
- 			Context ctx = new InitialContext();
-            ExecutorService managedExecutorService = (ExecutorService) ctx.lookup("java:comp/DefaultManagedExecutorService");
+		if (prop == null)
+			logger.debug(
+					"************** ========= Properties not loaded! Check the name of the properties file! ************** ========= ");
+		else {
+			logger.debug("************** ========= Property test-silvercloud-scnodes is set to: "
+					+ prop.getProperty("test-silvercloud-scnodes"));
+			logger.debug("All properties: ");
+			prop.list(System.out);
+		}
+		// Obtain the MBean server
+		MBeanServer mBeanServer = MBeanServerFactory.findMBeanServer(null).get(0);
 
-            managedExecutorService.submit(pingMessageReaderTask);
-    		logger.debug("Started pingMessageReaderTask");
+		// Obtain the Catalina Server object
+		Executor executor = null;
+		try {
+			ObjectName objectName = new ObjectName("Catalina", "type", "Server");
+			StandardServer server = (StandardServer) mBeanServer.getAttribute(objectName, "managedResource");
 
- 		}
- 		catch (NamingException e) {
- 			e.printStackTrace();
- 		}
-		*/
- 		/* The method below is too far fetched. A better solution is to use Spring
- 		 MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-         ObjectName name = new ObjectName("Catalina:type=Server");
-         org.apache.catalina.Server server = (org.apache.catalina.Server) mBeanServer.getAttribute(name, "managedResource");
-         Executor executor = server.findExecutor("myExecutor");	
-		*/
- 	     this.executor = new ThreadPoolExecutor(
- 	            5, // corePoolSize
- 	            10, // maximumPoolSize
- 	            60, // keepAliveTime
- 	            TimeUnit.SECONDS, // timeUnit
- 	            new ArrayBlockingQueue<Runnable>(10) // workQueue
- 	        );
-         executor.execute(pingMessageReaderTask);
- 	}
+			// Get the Service
+			Service service = server.findService("Catalina");
+
+			// Get the Executor
+			executor = ((StandardService) service).getExecutor("pingHeatMapThreadpool");
+
+		} catch (MalformedObjectNameException | MBeanException | InstanceNotFoundException | AttributeNotFoundException
+				| ReflectionException allExceptions) {
+			// TODO Auto-generated catch block
+			allExceptions.printStackTrace();
+		}
+		
+
+		if (executor != null) {
+			executor.execute(pingMessageReaderTask);
+			logger.debug("Started PingMessageReaderTask with managed threadpool!!! $$$$$$$$$$$ grepraaktindewarvandollars ***********");
+
+		}
+		else logger.debug("pingMessageReaderTask NOT STARTED &&&@@@");
+	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
 		executor.shutdown();
+		// executor.close();
 	}
 }
