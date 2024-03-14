@@ -18,30 +18,21 @@ import net.spikesync.pingerdaemonrabbitmqclient.PingMsgReader;
 import net.spikesync.pingerdaemonrabbitmqclient.PingMsgReaderRunnable;
 import net.spikesync.pingerdaemonrabbitmqclient.PropertiesLoader;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.catalina.Executor;
+import org.apache.catalina.LifecycleException;
 import org.apache.catalina.core.StandardServer;
 import org.apache.catalina.core.StandardService;
 import org.apache.catalina.core.StandardThreadExecutor;
 import org.apache.catalina.Service;
 
 import javax.management.*;
-//import org.apache.catalina.ServerFactory;
-import org.apache.catalina.Executor;
 
 public class PingHeatAppThreadContextListener implements ServletContextListener {
 
 	private PingMsgReaderRunnable pingMessageReaderTask;
 	private static final Logger logger = LoggerFactory.getLogger(PingHeatAppThreadContextListener.class);
-	private ThreadPoolExecutor executor;
+	private Executor executor;
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
@@ -64,7 +55,7 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 		MBeanServer mBeanServer = MBeanServerFactory.findMBeanServer(null).get(0);
 
 		// Obtain the Catalina Server object
-		Executor executor = null;
+		this.executor = null;
 		try {
 			ObjectName objectName = new ObjectName("Catalina", "type", "Server");
 			StandardServer server = (StandardServer) mBeanServer.getAttribute(objectName, "managedResource");
@@ -73,11 +64,10 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 			Service service = server.findService("Catalina");
 
 			// Get the Executor
-			executor = ((StandardService) service).getExecutor("pingHeatMapThreadpool");
+			this.executor = ((StandardService) service).getExecutor("pingHeatMapThreadpool");
 
 		} catch (MalformedObjectNameException | MBeanException | InstanceNotFoundException | AttributeNotFoundException
 				| ReflectionException allExceptions) {
-			// TODO Auto-generated catch block
 			allExceptions.printStackTrace();
 		}
 		
@@ -92,7 +82,14 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
-		executor.shutdown();
+		try {
+			this.executor.destroy();
+		} catch (LifecycleException e) {
+			//From the API doc: this component, i.e., the Catalina Executor, detected a fatal error that prevents this component from being used
+			e.printStackTrace();
+			logger.debug("ERROR: this component, i.e., the Catalina Executor, detected a fatal error that prevents this component from being used."
+					+ "The Thread Executor didn't shutdown properly!");
+		}
 		// executor.close();
 	}
 }
