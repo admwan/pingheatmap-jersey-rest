@@ -18,7 +18,6 @@ import net.spikesync.pingerdaemonrabbitmqclient.PingMsgReader;
 import net.spikesync.pingerdaemonrabbitmqclient.PingMsgReaderRunnable;
 import net.spikesync.pingerdaemonrabbitmqclient.PropertiesLoader;
 
-
 import org.apache.catalina.Executor;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.core.StandardServer;
@@ -70,26 +69,30 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 				| ReflectionException allExceptions) {
 			allExceptions.printStackTrace();
 		}
-		
 
 		if (executor != null) {
 			executor.execute(pingMessageReaderTask);
-			logger.debug("Started PingMessageReaderTask with managed threadpool!!! $$$$$$$$$$$ grepraaktindewarvandollars ***********");
+			logger.debug(
+					"Started PingMessageReaderTask with managed threadpool!!! $$$$$$$$$$$ grepraaktindewarvandollars ***********");
 
-		}
-		else logger.debug("pingMessageReaderTask NOT STARTED &&&@@@");
+		} else
+			logger.debug("pingMessageReaderTask NOT STARTED &&&@@@");
 	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
+		/*
 		try {
 			this.executor.destroy();
 		} catch (LifecycleException e) {
-			//From the API doc: this component, i.e., the Catalina Executor, detected a fatal error that prevents this component from being used
+			// From the API doc: this component, i.e., the Catalina Executor, detected a
+			// fatal error that prevents this component from being used
 			e.printStackTrace();
-			logger.debug("ERROR: this component, i.e., the Catalina Executor, detected a fatal error that prevents this component from being used."
-					+ "The Thread Executor didn't shutdown properly!");
+			logger.debug(
+					"ERROR: this component, i.e., the Catalina Executor, detected a fatal error that prevents this component from being used."
+							+ "The Thread Executor didn't shutdown properly!");
 		}
-		// executor.close();
+		*/
+		logger.debug("Did NOT desroy executor!");
 	}
 }
