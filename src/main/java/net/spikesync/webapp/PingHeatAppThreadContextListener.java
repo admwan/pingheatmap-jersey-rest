@@ -81,7 +81,8 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
-		/*
+		/* When the application is stopped or terminated Tomcat will clean up when the org.apache.catalina.Executor
+		 * obtained from JMX is used.
 		try {
 			this.executor.destroy();
 		} catch (LifecycleException e) {
@@ -93,6 +94,6 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 							+ "The Thread Executor didn't shutdown properly!");
 		}
 		*/
-		logger.debug("Did NOT desroy executor!");
+		logger.debug("Tomcat JMX cleaned up used resources after contextDestroyed().");
 	}
 }
