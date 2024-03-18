@@ -34,7 +34,7 @@ public class PingHeatMapServlet extends HttpServlet {
         // Handle GET requests
 	   logger.debug("In PingHeatMapServlet doGet");
 		// Generate JSON response representing user data
-		String jsonResponse = "{\"NodeName\": 1, \"name\": \"THORFW\"}";
+		String jsonResponse = this.pingHeatMap.getPingHeatMapAsString();
 
 		// Set response content type and status
 		response.setContentType("application/json");
