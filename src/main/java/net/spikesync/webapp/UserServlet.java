@@ -3,22 +3,24 @@ package net.spikesync.webapp;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-//@WebServlet("/userservlet/*")
 public class UserServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -2535788907381898485L;
+	private static final Logger logger = LoggerFactory.getLogger(UserServlet.class);
 
 	@Override
 	public void init(ServletConfig config) {
-		//System.out.println("Servlet is being initialized");
+		logger.debug("!!!!!!!!!!!!!!!!!! UserServlet is being initialized ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 	}
 	
 	@Override

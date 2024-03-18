@@ -7,6 +7,33 @@
 	version="5.0">
 
 	<servlet>
+		<servlet-name>UserServlet</servlet-name>
+		<servlet-class>net.spikesync.webapp.UserServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UserServlet</servlet-name>
+		<url-pattern>/jsonpage</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>DummyServlet</servlet-name>
+		<servlet-class>net.spikesync.webapp.DummyServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DummyServlet</servlet-name>
+		<url-pattern>/dummypage</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>PingHeatMapServlet</servlet-name>
+		<servlet-class>net.spikesync.webapp.PingHeatMapServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>PingHeatMapServlet</servlet-name>
+		<url-pattern>/pingheatmap</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
 		<servlet-name>LuckyDayPage</servlet-name>
 		<jsp-file>/luckyday.jsp</jsp-file>
 	</servlet>
@@ -23,15 +50,6 @@
 	<servlet-mapping>
 		<servlet-name>TimePage</servlet-name>
 		<url-pattern>/timepage</url-pattern>
-	</servlet-mapping>
-
-	<servlet>
-		<servlet-name>UserServlet</servlet-name>
-		<servlet-class>net.spikesync.webapp.UserServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>UserServlet</servlet-name>
-		<url-pattern>/jsonpage</url-pattern>
 	</servlet-mapping>
 
 	<listener>
