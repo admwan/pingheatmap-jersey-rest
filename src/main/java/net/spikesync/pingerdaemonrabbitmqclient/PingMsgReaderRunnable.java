@@ -61,4 +61,10 @@ public class PingMsgReaderRunnable implements Runnable {
 		}
 	}
 
+	/* A method to access the Ping Heatmap, for e.g., displaying it in in a webpage */
+	
+	public PingHeatMap getPingHeatMap() {
+		return this.pingHeatMap;
+	}
+	
 }

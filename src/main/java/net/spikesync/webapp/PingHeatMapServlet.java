@@ -8,47 +8,56 @@ import org.slf4j.LoggerFactory;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.ServletConfig;
 
-import net.spikesync.pingerdaemonrabbitmqclient.PingHeatMap;
-
+import net.spikesync.pingerdaemonrabbitmqclient.PingMsgReaderRunnable;
 
 public class PingHeatMapServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -2535788907381898485L;
 
-	private PingHeatMap pingHeatMap;
 	private static final Logger logger = LoggerFactory.getLogger(PingHeatMapServlet.class);
 
 	@Override
 	public void init(ServletConfig config) {
-		logger.debug("****************** PingHeatMapServlet is being initialized ######################################");
+		logger.debug(
+				"****************** PingHeatMapServlet is being initialized ######################################");
 	}
 
-   @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Handle GET requests
-	   logger.debug("In PingHeatMapServlet doGet");
-		// Generate JSON response representing user data
-		String jsonResponse = this.pingHeatMap.getPingHeatMapAsString();
-
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// Handle GET requests
+		logger.debug("In PingHeatMapServlet doGet");
+		
 		// Set response content type and status
 		response.setContentType("application/json");
 		response.setStatus(HttpServletResponse.SC_OK);
 
 		// Send JSON data as response
 		PrintWriter out = response.getWriter();
+
+		//Retrieve the pingMessageReaderTask from the ServletContex to obtain the Ping Heatmap and put it in the response.
+		ServletContext servletContext = request.getServletContext();
+		PingMsgReaderRunnable pingMessageReaderTask = (PingMsgReaderRunnable) servletContext.getAttribute("pingMessageReaderTask");
+		if(pingMessageReaderTask !=null) {
+		String jsonResponse = pingMessageReaderTask.getPingHeatMap().getPingHeatMapAsString();
+		
 		out.print(jsonResponse);
 		out.flush();
-    }
+		}
+		out.println("ERROR! The PingMessageReaderTask doesn't exist!!");
+	}
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	String paramWidth = request.getParameter("width");
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String paramWidth = request.getParameter("width");
 		int width = Integer.parseInt(paramWidth);
 
 		String paramHeight = request.getParameter("height");
@@ -70,7 +79,7 @@ public class PingHeatMapServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    }
+	}
 
 	@Override
 	public void destroy() {

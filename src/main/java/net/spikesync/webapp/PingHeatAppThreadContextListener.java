@@ -39,6 +39,11 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 		ServletContext servletContext = sce.getServletContext();
 		pingMessageReaderTask = new PingMsgReaderRunnable();
 
+		/*Set an attribute in the ServletContext in order to get access to the runnable, in this case
+		 * to the PingHeatMap. 
+		 */
+		sce.getServletContext().setAttribute("pingMessageReaderTask", pingMessageReaderTask);
+		
 		PropertiesLoader propLoader = new PropertiesLoader(servletContext);
 		Properties prop = propLoader.loadProperties();
 		if (prop == null)
