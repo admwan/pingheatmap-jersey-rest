@@ -51,7 +51,7 @@ public class PingHeatMapServlet extends HttpServlet {
 		out.print(jsonResponse);
 		out.flush();
 		}
-		out.println("ERROR! The PingMessageReaderTask doesn't exist!!");
+		else out.println("ERROR! The PingMessageReaderTask doesn't exist!!");
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class PingHeatMapServlet extends HttpServlet {
 
 	@Override
 	public void destroy() {
-		System.out.println("Servlet is being destroyed");
+		System.out.println("PingHeatMapServlet is being destroyed");
 	}
 
 }
