@@ -25,16 +25,14 @@ public class PingHeatMapServlet extends HttpServlet {
 
 	@Override
 	public void init(ServletConfig config) {
-		logger.debug(
-				"****************** PingHeatMapServlet is being initialized ######################################");
+		logger.debug("****************** PingHeatMapServlet is being initialized ######################################");
 	}
 
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// Handle GET requests
 		logger.debug("In PingHeatMapServlet doGet");
-		
+
 		// Set response content type and status
 		response.setContentType("application/json");
 		response.setStatus(HttpServletResponse.SC_OK);
@@ -42,21 +40,20 @@ public class PingHeatMapServlet extends HttpServlet {
 		// Send JSON data as response
 		PrintWriter out = response.getWriter();
 
-		//Retrieve the pingMessageReaderTask from the ServletContex to obtain the Ping Heatmap and put it in the response.
+		// Retrieve the pingMessageReaderTask from the ServletContex to obtain the Ping
+		// Heatmap and put it in the response.
 		ServletContext servletContext = request.getServletContext();
 		PingMsgReaderRunnable pingMessageReaderTask = (PingMsgReaderRunnable) servletContext.getAttribute("pingMessageReaderTask");
-		if(pingMessageReaderTask !=null) {
-		String jsonResponse = pingMessageReaderTask.getPingHeatMap().getPingHeatMapAsString();
-		
-		out.print(jsonResponse);
-		out.flush();
-		}
-		else out.println("ERROR! The PingMessageReaderTask doesn't exist!!");
+		if (pingMessageReaderTask != null) {
+			String jsonResponse = pingMessageReaderTask.getPingHeatMap().getPingHeatMapAsString();
+			out.print(jsonResponse);
+			out.flush();
+		} else
+			out.println("ERROR! The PingMessageReaderTask doesn't exist!!");
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String paramWidth = request.getParameter("width");
 		int width = Integer.parseInt(paramWidth);
 

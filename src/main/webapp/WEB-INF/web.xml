@@ -16,12 +16,12 @@
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>DummyServlet</servlet-name>
-		<servlet-class>net.spikesync.webapp.DummyServlet</servlet-class>
+		<servlet-name>StartPingHeatMapServlet</servlet-name>
+		<servlet-class>net.spikesync.webapp.StartPingHeatMapServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>DummyServlet</servlet-name>
-		<url-pattern>/dummypage</url-pattern>
+		<servlet-name>StartPingHeatMapServlet</servlet-name>
+		<url-pattern>/startpingheatmap</url-pattern>
 	</servlet-mapping>
 
 	<servlet>
