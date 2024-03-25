@@ -42,7 +42,6 @@
 		<url-pattern>/luckyday</url-pattern>
 	</servlet-mapping>
 
-
 	<servlet>
 		<servlet-name>TimePage</servlet-name>
 		<jsp-file>/timepage.jsp</jsp-file>

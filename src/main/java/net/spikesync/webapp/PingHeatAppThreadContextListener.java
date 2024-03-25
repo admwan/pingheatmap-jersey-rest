@@ -39,11 +39,12 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 		ServletContext servletContext = sce.getServletContext();
 		pingMessageReaderTask = new PingMsgReaderRunnable();
 
-		/*Set an attribute in the ServletContext in order to get access to the runnable, in this case
-		 * to the PingHeatMap. 
+		/*
+		 * Set an attribute in the ServletContext in order to get access to the
+		 * runnable, in this case to the PingHeatMap.
 		 */
 		sce.getServletContext().setAttribute("pingMessageReaderTask", pingMessageReaderTask);
-		
+
 		PropertiesLoader propLoader = new PropertiesLoader(servletContext);
 		Properties prop = propLoader.loadProperties();
 		if (prop == null)
@@ -65,9 +66,9 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 			StandardServer server = (StandardServer) mBeanServer.getAttribute(objectName, "managedResource");
 
 			// Get the Service
-			Service service = server.findService("Catalina");
-
-			// Get the Executor
+			Service service = (StandardService)server.findService("Catalina");
+			
+			// Get the Executor. It must be defined in /opt/tomcat/apache-tomcat-10.1.17/conf/server.xml !!! 
 			this.executor = ((StandardService) service).getExecutor("pingHeatMapThreadpool");
 
 		} catch (MalformedObjectNameException | MBeanException | InstanceNotFoundException | AttributeNotFoundException
@@ -76,9 +77,10 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 		}
 
 		if (executor != null) {
+
 			executor.execute(pingMessageReaderTask);
 			logger.debug(
-					"Started PingMessageReaderTask with managed threadpool!!! $$$$$$$$$$$ grepraaktindewarvandollars ***********");
+					"STARTED PingMessageReaderTask with managed threadpool!!! $$$$$$$$$$$ grepraaktindewarvandollars ***********");
 
 		} else
 			logger.debug("pingMessageReaderTask NOT STARTED &&&@@@");
@@ -86,19 +88,16 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
-		/* When the application is stopped or terminated Tomcat will clean up when the org.apache.catalina.Executor
-		 * obtained from JMX is used.
-		try {
-			this.executor.destroy();
-		} catch (LifecycleException e) {
-			// From the API doc: this component, i.e., the Catalina Executor, detected a
-			// fatal error that prevents this component from being used
-			e.printStackTrace();
-			logger.debug(
-					"ERROR: this component, i.e., the Catalina Executor, detected a fatal error that prevents this component from being used."
-							+ "The Thread Executor didn't shutdown properly!");
-		}
-		*/
+		/*
+		 * When the application is stopped or terminated Tomcat will clean up when the
+		 * org.apache.catalina.Executor obtained from JMX is used. try {
+		 * this.executor.destroy(); } catch (LifecycleException e) { // From the API
+		 * doc: this component, i.e., the Catalina Executor, detected a // fatal error
+		 * that prevents this component from being used e.printStackTrace();
+		 * logger.debug(
+		 * "ERROR: this component, i.e., the Catalina Executor, detected a fatal error that prevents this component from being used."
+		 * + "The Thread Executor didn't shutdown properly!"); }
+		 */
 		logger.debug("Tomcat JMX cleaned up used resources after contextDestroyed().");
 	}
 }

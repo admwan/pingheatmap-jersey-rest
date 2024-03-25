@@ -48,11 +48,11 @@ public class StartPingHeatMapServlet extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
-		//ServletContext servletContext = request.getServletContext();
+		ServletContext servletContext = request.getServletContext();
 		
 		String serviceCommand = request.getParameter("command");
-		//PingMsgReaderRunnable pingMessageReaderTask = (PingMsgReaderRunnable) servletContext.getAttribute("pingMessageReaderTask");
-		Object pingMessageReaderTask = null;
+		PingMsgReaderRunnable pingMessageReaderTask = (PingMsgReaderRunnable) servletContext.getAttribute("pingMessageReaderTask");
+		//pingMessageReaderTask = null;
 
 		PrintWriter writer = response.getWriter();
 
@@ -65,6 +65,7 @@ public class StartPingHeatMapServlet extends HttpServlet {
 			else {
 				writer.println("<html>Start command received for service StartPingHeatMapServlet.\n");
 				writer.println("PingMessageReaderTask ALREADY STARTED!! Command ignored.</html>");
+				writer.flush();
 				
 			}
 		} else {
