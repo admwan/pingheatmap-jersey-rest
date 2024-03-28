@@ -23,16 +23,14 @@ import javax.management.*;
 
 public class PingHeatAppThreadContextListener implements ServletContextListener {
 
-	private PingMsgReaderRunnable pingMessageReaderTask;
 	private static final Logger logger = LoggerFactory.getLogger(PingHeatAppThreadContextListener.class);
 	Enum<LifecycleState> lifecycleState;
-	private Executor executor;
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 
 		ServletContext servletContext = sce.getServletContext();
-		pingMessageReaderTask = new PingMsgReaderRunnable();
+		PingMsgReaderRunnable pingMessageReaderTask = new PingMsgReaderRunnable();
 
 		/*
 		 * Set an attribute in the ServletContext in order to get access to the
@@ -43,35 +41,18 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 		PropertiesLoader propLoader = new PropertiesLoader(servletContext);
 		Properties prop = propLoader.loadProperties();
 		if (prop == null)
-			logger.debug(
-					"************** ========= Properties not loaded! Check the name of the properties file! ************** ========= ");
+			logger.debug("Properties not loaded! Check the name of the properties file!!");
 		else {
-			logger.debug("************** ========= Property test-silvercloud-scnodes is set to: "
-					+ prop.getProperty("test-silvercloud-scnodes"));
-			logger.debug("All properties: ");
-			prop.list(System.out);
+			logger.debug(
+					"Property test-silvercloud-scnodes is set to: " + prop.getProperty("test-silvercloud-scnodes"));
+			logger.debug("Allllllllllllllllllllll PPPPPPPPPPPPPPPPPPPPPPPPPProperties:\n");
+			for (String propertyName : prop.stringPropertyNames()) {
+				logger.debug(propertyName + "=" + prop.getProperty(propertyName));
+			}
+
 		}
-		// Obtain the MBean server
-		MBeanServer mBeanServer = MBeanServerFactory.findMBeanServer(null).get(0);
-
-		// Obtain the Catalina Server object
-		this.executor = null;
-		try {
-			ObjectName objectName = new ObjectName("Catalina", "type", "Server");
-			StandardServer server = (StandardServer) mBeanServer.getAttribute(objectName, "managedResource");
-
-			// Get the Service
-			Service service = (StandardService) server.findService("Catalina");
-
-			// Get the Executor. It must be defined in
-			// /opt/tomcat/apache-tomcat-10.1.17/conf/server.xml !!!
-			this.executor = ((StandardService) service).getExecutor("pingHeatMapThreadpool");
-
-		} catch (MalformedObjectNameException | MBeanException | InstanceNotFoundException | AttributeNotFoundException
-				| ReflectionException allExceptions) {
-			allExceptions.printStackTrace();
-		}
-
+		Executor executor = getExecutor("pingHeatMapThreadpool");
+		
 		if (executor != null) {
 			lifecycleState = executor.getState();
 			logger.debug("LifecycleState of org.apache.catalina.Executor this.executor: " + lifecycleState.toString());
@@ -86,12 +67,35 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 					logger.debug("Failed to start the executor!!\n" + e.toString());
 				}
 			if (lifecycleState.equals(LifecycleState.STARTED)) { // Only execute the executor if it has been started.
-				executor.execute(pingMessageReaderTask);
-				logger.debug(
-						"STARTED PingMessageReaderTask with managed threadpool!!! $$$$$$$$$$$ grepraaktindewarvandollars ***********");
+				// executor.execute(pingMessageReaderTask);
+				logger.debug("STARTED the executor, but not started Execution yet!!");
 			}
 		} else
 			logger.debug("pingMessageReaderTask NOT STARTED &&&@@@");
+	}
+
+	private Executor getExecutor(String executorName) {
+		Executor executor = null;
+		// Obtain the MBean server
+		MBeanServer mBeanServer = MBeanServerFactory.findMBeanServer(null).get(0);
+
+
+		try {
+			ObjectName objectName = new ObjectName("Catalina", "type", "Server");
+			StandardServer server = (StandardServer) mBeanServer.getAttribute(objectName, "managedResource");
+
+			// Get the Service
+			Service service = (StandardService) server.findService("Catalina");
+
+			// Get the Executor. It must be defined in
+			// /opt/tomcat/apache-tomcat-10.1.17/conf/server.xml !!!
+			executor = ((StandardService) service).getExecutor(executorName);
+
+		} catch (MalformedObjectNameException | MBeanException | InstanceNotFoundException | AttributeNotFoundException
+				| ReflectionException allExceptions) {
+			allExceptions.printStackTrace();
+		}
+		return executor;
 	}
 
 	@Override
@@ -101,8 +105,8 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 		 * org.apache.catalina.Executor obtained from JMX is used. try {
 		 * this.executor.destroy(); } catch (LifecycleException e) { // From the API
 		 * doc: this component, i.e., the Catalina Executor, detected a // fatal error
-		 * that prevents this component from being used e.printStackTrace();
-		 * logger.debug("ERROR: this component, i.e., the Catalina Executor, detected a fatal error that prevents this component from being used."
+		 * that prevents this component from being used e.printStackTrace(); logger.
+		 * debug("ERROR: this component, i.e., the Catalina Executor, detected a fatal error that prevents this component from being used."
 		 * + "The Thread Executor didn't shutdown properly!"); }
 		 */
 		logger.debug("Tomcat JMX cleaned up used resources after contextDestroyed().");

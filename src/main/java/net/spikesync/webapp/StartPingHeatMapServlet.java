@@ -5,6 +5,20 @@ import jakarta.servlet.http.HttpServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.management.AttributeNotFoundException;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
+import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
+
+import org.apache.catalina.Executor;
+import org.apache.catalina.LifecycleState;
+import org.apache.catalina.Service;
+import org.apache.catalina.core.StandardServer;
+import org.apache.catalina.core.StandardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,31 +61,42 @@ public class StartPingHeatMapServlet extends HttpServlet {
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
-		ServletContext servletContext = request.getServletContext();
-		
+
 		String serviceCommand = request.getParameter("command");
-		PingMsgReaderRunnable pingMessageReaderTask = (PingMsgReaderRunnable) servletContext.getAttribute("pingMessageReaderTask");
-		//pingMessageReaderTask = null;
 
 		PrintWriter writer = response.getWriter();
 
 		if (serviceCommand.equals("start")) {
-			if(pingMessageReaderTask==null) {
-			writer.println("<html>Start command received for service StartPingHeatMapServlet.\n");
-			writer.println("Attempting to start PingMessageReaderTask ...</html>");
-			writer.flush();
-			}
-			else {
-				writer.println("<html>Start command received for service StartPingHeatMapServlet.\n");
-				writer.println("PingMessageReaderTask ALREADY STARTED!! Command ignored.</html>");
-				writer.flush();
+			ServletContext servletContext = request.getServletContext();
+			PingMsgReaderRunnable pingMessageReaderTask = (PingMsgReaderRunnable) servletContext
+					.getAttribute("pingMessageReaderTask");
+			Executor executor = getExecutor("pingHeatMapThreadpool");
+			LifecycleState lifecycleState = null;
+			if ((pingMessageReaderTask != null) && (executor != null)) {
+				lifecycleState = executor.getState();
+				logger.debug("LifecycleState of org.apache.catalina.Executor this.executor: " + lifecycleState.toString());
+
+				if(lifecycleState.equals(LifecycleState.STARTED)) {
 				
+					logger.debug("State of the executor is STARTED");
+					executor.execute(pingMessageReaderTask);
+				}
+				
+				writer.flush();
+			} else {
+				writer.println("PingMessageReaderTask CANNOT be started!");
+				writer.flush();
+
 			}
 		} else {
 			writer.println("<html>Command given to StartPingHeatMapServlet is NOT RECOGNIZED!</html>");
 			writer.flush();
 		}
+	}
+
+	/*-
+	 * A RequestDispatcher is intended to wrap Servlets, so it's not appropriate
+	 * here 
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/index.jsp");
 		logger.debug("Now in UserServlet.doPost with dispatcher toString: " + dispatcher.toString());
 		try {
@@ -83,7 +108,29 @@ public class StartPingHeatMapServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	 */
 
+	private Executor getExecutor(String executorName) {
+		Executor executor = null;
+		// Obtain the MBean server
+		MBeanServer mBeanServer = MBeanServerFactory.findMBeanServer(null).get(0);
+
+		try {
+			ObjectName objectName = new ObjectName("Catalina", "type", "Server");
+			StandardServer server = (StandardServer) mBeanServer.getAttribute(objectName, "managedResource");
+
+			// Get the Service
+			Service service = (StandardService) server.findService("Catalina");
+
+			// Get the Executor. It must be defined in
+			// /opt/tomcat/apache-tomcat-10.1.17/conf/server.xml !!!
+			executor = ((StandardService) service).getExecutor(executorName);
+
+		} catch (MalformedObjectNameException | MBeanException | InstanceNotFoundException | AttributeNotFoundException
+				| ReflectionException allExceptions) {
+			allExceptions.printStackTrace();
+		}
+		return executor;
 	}
 
 	@Override
