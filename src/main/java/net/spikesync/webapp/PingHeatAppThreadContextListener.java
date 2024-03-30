@@ -1,6 +1,9 @@
 package net.spikesync.webapp;
 
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +39,7 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 		 * Set an attribute in the ServletContext in order to get access to the
 		 * runnable, in this case to the PingHeatMap.
 		 */
-		sce.getServletContext().setAttribute("pingMessageReaderTask", pingMessageReaderTask);
+		servletContext.setAttribute("pingMessageReaderTask", pingMessageReaderTask);
 
 		PropertiesLoader propLoader = new PropertiesLoader(servletContext);
 		Properties prop = propLoader.loadProperties();
@@ -51,8 +54,16 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 			}
 
 		}
-		Executor executor = getExecutor("pingHeatMapThreadpool");
+//		Executor executor = getExecutor("pingHeatMapThreadpool");
+        
+		ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 		
+		executorService.submit(pingMessageReaderTask);
+		
+		// Store ExecutorService in ServletContext
+        servletContext.setAttribute("executorService", executorService);
+
+        /*-
 		if (executor != null) {
 			lifecycleState = executor.getState();
 			logger.debug("LifecycleState of org.apache.catalina.Executor this.executor: " + lifecycleState.toString());
@@ -71,8 +82,8 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 				logger.debug("STARTED the executor, but not started Execution yet!!");
 			}
 		} else
-			logger.debug("pingMessageReaderTask NOT STARTED &&&@@@");
-	}
+			logger.debug("pingMessageReaderTask NOT STARTED &&&@@@"); */
+	} 
 
 	private Executor getExecutor(String executorName) {
 		Executor executor = null;
