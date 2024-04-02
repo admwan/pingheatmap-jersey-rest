@@ -5,6 +5,11 @@ import jakarta.servlet.http.HttpServlet;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanException;
@@ -67,32 +72,85 @@ public class StartPingHeatMapServlet extends HttpServlet {
 		PrintWriter writer = response.getWriter();
 
 		if (serviceCommand.equals("start")) {
+
 			ServletContext servletContext = request.getServletContext();
 			PingMsgReaderRunnable pingMessageReaderTask = (PingMsgReaderRunnable) servletContext
 					.getAttribute("pingMessageReaderTask");
-			Executor executor = getExecutor("pingHeatMapThreadpool");
-			LifecycleState lifecycleState = null;
-			if ((pingMessageReaderTask != null) && (executor != null)) {
-				lifecycleState = executor.getState();
-				logger.debug("LifecycleState of org.apache.catalina.Executor this.executor: " + lifecycleState.toString());
+			if (pingMessageReaderTask.isRunningState()) { // If the state of the Runnable is in "isRunning" than start it in the Executor
+				ExecutorService executor = (ExecutorService) servletContext.getAttribute("pingHeatMapExecutor");
 
-				if(lifecycleState.equals(LifecycleState.STARTED)) {
-				
-					logger.debug("State of the executor is STARTED");
-					executor.execute(pingMessageReaderTask);
-				}
-				
+				Future<?> futurePingMessageReaderTask = executor.submit(pingMessageReaderTask);
+				servletContext.setAttribute("futurePingMessageReaderTask", futurePingMessageReaderTask);
+				boolean isdone = futurePingMessageReaderTask.isDone();
+				logger.debug("Is futurePingMessageReaderTask set to 'done' ?" + isdone);
+
+				logger.debug("pingMessageReaderTask submitted to pingHeatMapExecutor!");
+				writer.println("pingMessageReaderTask submitted to pingHeatMapExecutor!");
 				writer.flush();
+			}
+			else{
+				pingMessageReaderTask.restart();
+				logger.debug("pingMessageReaderTask RESTARTED from a stopped state!");
+				writer.println("pingMessageReaderTask RESTARTED from a stopped state!");
+				writer.flush();
+	
+			}
+				
+		} else if (serviceCommand.equals("stop")) {
+			ServletContext servletContext = request.getServletContext();
+
+			Future<?> futurePingMessageReaderTask = (Future<?>) servletContext
+					.getAttribute("futurePingMessageReaderTask");
+			if (futurePingMessageReaderTask != null && !futurePingMessageReaderTask.isDone()
+					&& !futurePingMessageReaderTask.isCancelled()) {
+
+				futurePingMessageReaderTask.cancel(true);
+
+				PingMsgReaderRunnable pingMessageReaderTask = (PingMsgReaderRunnable) servletContext
+						.getAttribute("pingMessageReaderTask");
+				pingMessageReaderTask.stop();
+				logger.debug("futurePingHeatMapExecutor STOPPED after command stop. PingMsgReaderTask interrupted!");
+				writer.println("futurePingHeatMapExecutor STOPPED after command stop. PingMsgReaderTask interrupted!");
+				writer.flush();
+
 			} else {
-				writer.println("PingMessageReaderTask CANNOT be started!");
+				logger.debug("futurePingHeatMapExecutor !!NOT!! STOPPED");
+				writer.println("futurePingHeatMapExecutor !!NOT!! STOPPED");
 				writer.flush();
 
 			}
+
 		} else {
-			writer.println("<html>Command given to StartPingHeatMapServlet is NOT RECOGNIZED!</html>");
+			writer.println("Command given to StartPingHeatMapServlet is NOT RECOGNIZED!");
 			writer.flush();
 		}
 	}
+
+	/*- The LifecyleState based logic is not applicable to ScheluedExecutorService
+	
+	LifecycleState lifecycleState = null;
+	
+	if ((pingMessageReaderTask != null) && (executor != null)) {
+		lifecycleState = ((Executor) executor).getState();
+		logger.debug("LifecycleState of org.apache.catalina.Executor this.executor: " + lifecycleState.toString());
+	
+		if(lifecycleState.equals(LifecycleState.STARTED)) {
+		
+			logger.debug("State of the executor is STARTED");
+			executor.execute(pingMessageReaderTask);
+		}
+		
+		writer.flush();
+	} else {
+		writer.println("PingMessageReaderTask CANNOT be started!");
+		writer.flush();
+	
+	}
+	} else {
+	writer.println("<html>Command given to StartPingHeatMapServlet is NOT RECOGNIZED!</html>");
+	writer.flush();
+	}
+	} */
 
 	/*-
 	 * A RequestDispatcher is intended to wrap Servlets, so it's not appropriate

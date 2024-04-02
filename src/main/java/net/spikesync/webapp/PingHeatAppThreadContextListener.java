@@ -54,14 +54,19 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 			}
 
 		}
-//		Executor executor = getExecutor("pingHeatMapThreadpool");
         
 		ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 		
-		executorService.submit(pingMessageReaderTask);
+		//executorService.submit(pingMessageReaderTask);
+
 		
-		// Store ExecutorService in ServletContext
-        servletContext.setAttribute("executorService", executorService);
+		servletContext.setAttribute("pingHeatMapExecutor", executorService);
+		
+		ExecutorService dummyExecutor = (ExecutorService) servletContext.getAttribute("pingHeatMapExecutor");
+		
+		logger.debug("ExecutorService info: " + dummyExecutor.toString());
+		
+		
 
         /*-
 		if (executor != null) {

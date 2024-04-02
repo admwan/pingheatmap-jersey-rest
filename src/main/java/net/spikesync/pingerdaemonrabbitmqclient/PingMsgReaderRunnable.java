@@ -9,6 +9,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
 public class PingMsgReaderRunnable implements Runnable {
+
+	private volatile boolean isRunning = true;
+
 	private static final Logger logger = LoggerFactory.getLogger(PingMsgReaderRunnable.class);
 	private ApplicationContext context;
 	private PingMsgReader pingMsgReader;
@@ -28,22 +31,31 @@ public class PingMsgReaderRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		logger.debug("Method run() executed in PingMsgReaderThread -- output from LOGGER");
-		logger.debug("Calling readRmqAndUpdatePingHeatMap(String... args) from run()");
-		readRmqAndUpdatePingHeatMap("Execute main loop");
+		try {
+			while (isRunning) {
+				logger.debug("Task readRmqAndUpdatePingHeatMap is running ...");
+
+				if (Thread.currentThread().isInterrupted()) {
+					throw new InterruptedException();
+				}
+
+				logger.debug("Method run() executed in PingMsgReaderThread -- output from LOGGER");
+				logger.debug("Calling readRmqAndUpdatePingHeatMap(String... args) from run()");
+				readRmqAndUpdatePingHeatMap();
+			}
+		} catch (InterruptedException e) {
+			logger.debug("Task readRmqAndUpdatePingHeatMap was INTERRUPTED, stopping thread!!!!!!!!!!!!!!!");
+			this.isRunning = false;
+			return;
+		}
 	}
 
-	public void readRmqAndUpdatePingHeatMap(String... args) {
+	public void readRmqAndUpdatePingHeatMap() {
 
-		for (int i = 0; i < args.length; ++i) {
-			logger.info("args[{}]: {}", i, args[i]);
-		}
 
-		logger.debug("Now starting listener with devPingApp..connectPingMQ(context) --------------------**********");
 
 		// In this project everything needed by PingMsgReader is injected at
 		// bean-construction time, so it is ready to be used!
-		while (true) {
 			boolean connectionEstablished;
 			connectionEstablished = this.pingMsgReader.connectPingMQ();
 			if (connectionEstablished) {
@@ -51,20 +63,28 @@ public class PingMsgReaderRunnable implements Runnable {
 				this.pingHeatMap.setPingHeat(newPingEnties);
 				this.pingHeatMap.printPingHeatMap();
 			}
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		}
 	}
 
-	/* A method to access the Ping Heatmap, for e.g., displaying it in in a webpage */
-	
+	/*
+	 * A method to access the Ping Heatmap, for e.g., displaying it in in a webpage
+	 */
+
 	public PingHeatMap getPingHeatMap() {
 		return this.pingHeatMap;
+	}
+
+	public void stop() {
+		isRunning = false;
+
+	}
+	
+	public boolean isRunningState() {
+		return this.isRunning;
+	}
+	
+	public void restart() {
+		isRunning = true;
+		run();
 	}
 	
 }
