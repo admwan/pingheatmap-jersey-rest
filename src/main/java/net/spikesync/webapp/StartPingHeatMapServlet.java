@@ -59,9 +59,9 @@ public class StartPingHeatMapServlet extends HttpServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 
 		// Send JSON data as response
-		PrintWriter out = response.getWriter();
-		out.print(jsonResponse);
-		out.flush();
+		PrintWriter writer = response.getWriter();
+		writer.print(jsonResponse);
+		writer.flush();
 	}
 
 	@Override
@@ -99,13 +99,19 @@ public class StartPingHeatMapServlet extends HttpServlet {
 		} else if (serviceCommand.equals("stop")) {
 			ServletContext servletContext = request.getServletContext();
 
-			Future<?> futurePingMessageReaderTask = (Future<?>) servletContext
-					.getAttribute("futurePingMessageReaderTask");
-			if (futurePingMessageReaderTask != null && !futurePingMessageReaderTask.isDone()
+			Future<?> futurePingMessageReaderTask = (Future<?>) servletContext.getAttribute("futurePingMessageReaderTask");
+					
+			boolean futureIsDone = futurePingMessageReaderTask.isDone(); // There is no need to test for this condition
+			boolean futureCancelled = futurePingMessageReaderTask.isCancelled();
+			logger.debug("Future done = " + futureIsDone + ", Future cancelled = " + futureCancelled);
+		
+			/*- Test for these conditions has undesirable results
+			if (futurePingMessageReaderTask != null					
+					&& !futurePingMessageReaderTask.isDone()
 					&& !futurePingMessageReaderTask.isCancelled()) {
-
+			 */
 				futurePingMessageReaderTask.cancel(true);
-
+			
 				PingMsgReaderRunnable pingMessageReaderTask = (PingMsgReaderRunnable) servletContext
 						.getAttribute("pingMessageReaderTask");
 				pingMessageReaderTask.stop();
@@ -113,12 +119,14 @@ public class StartPingHeatMapServlet extends HttpServlet {
 				writer.println("futurePingHeatMapExecutor STOPPED after command stop. PingMsgReaderTask interrupted!");
 				writer.flush();
 
+				/*
 			} else {
 				logger.debug("futurePingHeatMapExecutor !!NOT!! STOPPED");
 				writer.println("futurePingHeatMapExecutor !!NOT!! STOPPED");
 				writer.flush();
 
 			}
+			*/
 
 		} else {
 			writer.println("Command given to StartPingHeatMapServlet is NOT RECOGNIZED!");

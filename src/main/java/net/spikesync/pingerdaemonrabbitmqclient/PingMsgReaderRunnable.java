@@ -74,6 +74,7 @@ public class PingMsgReaderRunnable implements Runnable {
 	}
 
 	public void stop() {
+		logger.debug("Method PingMsgReaderRunnable.stop() was called. Setting isRunning to false!");
 		isRunning = false;
 
 	}
