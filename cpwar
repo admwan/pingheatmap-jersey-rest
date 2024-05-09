@@ -1,0 +1,1 @@
+sudo cp target/pingheatmap-jersey-rest-1.0-SNAPSHOT.war /opt/apache-tomcat-10.1.23/webapps/
