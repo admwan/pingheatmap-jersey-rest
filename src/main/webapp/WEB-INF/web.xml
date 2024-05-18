@@ -51,26 +51,33 @@
 		<url-pattern>/timepage</url-pattern>
 	</servlet-mapping>
 
-   <!-- Spring ContextLoaderListener configuration -->
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/beans.xml</param-value>
-    </context-param>
+	<!-- Spring ContextLoaderListener configuration -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/beans.xml</param-value>
+	</context-param>
 
-    <!-- Spring ContextLoaderListener configuration 
-    	 Note that Maven packages beans.xml into the specified directory, but this may change depending on different build instructions
-    -->
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/classes/beans.xml</param-value>
-    </context-param>
 
-    <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
-	<!-- Explanation of ContexLoaderListener (ChatGPT):  
-	The ContextLoaderListener is a standard class provided by the Spring framework, and you typically don't need to define it yourself. 
-	Instead, you configure it in your web.xml. I did this here
- 	-->
+	<!-- Spring ContextLoaderListener configuration Note that Maven packages 
+		beans.xml into the specified directory, but this may change depending on 
+		different build instructions -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/classes/beans.xml</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<!-- Explanation of ContexLoaderListener (ChatGPT): The ContextLoaderListener 
+		is a standard class provided by the Spring framework, and you typically don't 
+		need to define it yourself. Instead, you configure it in your web.xml. I 
+		did this here -->
+
+
+	<listener>
+		<listener-class>net.spikesync.webapp.PingHeatAppThreadContextListener</listener-class>
+	</listener>
+
 </web-app>
 
