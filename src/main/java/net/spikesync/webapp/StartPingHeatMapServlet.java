@@ -6,39 +6,20 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-
-import javax.management.AttributeNotFoundException;
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanException;
-import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
-
-import org.apache.catalina.Executor;
-import org.apache.catalina.LifecycleState;
-import org.apache.catalina.Service;
-import org.apache.catalina.core.StandardServer;
-import org.apache.catalina.core.StandardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.spikesync.pingerdaemonrabbitmqclient.PingMsgReaderRunnable;
 
 public class StartPingHeatMapServlet extends HttpServlet {
 
-	// private static final long serialVersionUID = -2535788919381898485L;
+	private static final long serialVersionUID = -2535788919381898485L;
 	private static final Logger logger = LoggerFactory.getLogger(StartPingHeatMapServlet.class);
 
 	@Override
