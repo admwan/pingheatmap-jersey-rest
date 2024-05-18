@@ -36,7 +36,16 @@ public class PingMsgReaderRunnable implements Runnable {
 	
 	    public PingMsgReaderRunnable(ServletContext servletContext) {
 	        // Obtain the Spring application context from the servlet context
+	    	logger.debug("In constructor-PingMsgReaderRunnable");
 	        this.context = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+			this.pingMsgReader = this.context.getBean(PingMsgReader.class);
+			if (this.pingMsgReader != null) {
+				logger.debug("PingMsgReader initialized as: " + this.pingMsgReader.toString());
+			} else
+				logger.debug("PingMsgReader NOT initialized!");
+
+			this.pingHeatMap = this.context.getBean(PingHeatMap.class);
+
 	    }
 
 	@Override
