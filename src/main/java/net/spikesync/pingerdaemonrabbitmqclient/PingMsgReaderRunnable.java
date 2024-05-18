@@ -7,6 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import jakarta.servlet.ServletContext;
 
 public class PingMsgReaderRunnable implements Runnable {
 
@@ -17,6 +20,8 @@ public class PingMsgReaderRunnable implements Runnable {
 	private PingMsgReader pingMsgReader;
 	private PingHeatMap pingHeatMap;
 
+
+	/* Previous instantiation of the application context, where it isn't shared among servlets
 	public PingMsgReaderRunnable() {
 		this.context = new GenericXmlApplicationContext("classpath:beans.xml");
 
@@ -27,7 +32,12 @@ public class PingMsgReaderRunnable implements Runnable {
 			logger.debug("PingMsgReader NOT initialized!");
 
 		this.pingHeatMap = this.context.getBean(PingHeatMap.class);
-	}
+	} */
+	
+	    public PingMsgReaderRunnable(ServletContext servletContext) {
+	        // Obtain the Spring application context from the servlet context
+	        this.context = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+	    }
 
 	@Override
 	public void run() {

@@ -299,14 +299,29 @@
 				<artifactId>tomcat-catalina</artifactId>
 				<version>${tomcat.catalina.version}</version>
 			</dependency>
+		
 
-		</dependencies>
+			</dependencies>
 	</dependencyManagement>
 
 	<!-- ACTUAL dependencies -->
 	<!-- =================================== -->
 
+
+
 	<dependencies>
+		
+					
+			<!-- https://mvnrepository.com/artifact/org.springframework/spring-context-support -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context-support</artifactId>
+				<version>6.1.7</version>
+			</dependency>
+
+
+
+		
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
 			<artifactId>jersey-container-servlet-core</artifactId>
@@ -405,10 +420,10 @@
 		</dependency>
 
 
-			<dependency>
-				<groupId>org.apache.tomcat</groupId>
-				<artifactId>tomcat-catalina</artifactId>
-			</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-catalina</artifactId>
+		</dependency>
 
 		<!-- JSON support 
 		
