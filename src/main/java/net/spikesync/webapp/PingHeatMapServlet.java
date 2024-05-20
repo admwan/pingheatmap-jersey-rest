@@ -13,7 +13,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.ServletConfig;
 
 import net.spikesync.pingerdaemonrabbitmqclient.PingMsgReaderRunnable;
 
@@ -49,7 +48,7 @@ public class PingHeatMapServlet extends HttpServlet {
 			out.print(jsonResponse);
 			out.flush();
 		} else
-			out.println("ERROR! The PingMessageReaderTask doesn't exist!!");
+			out.println("ERROR! The pingMessageReaderTask doesn't exist!!");
 	}
 
 	@Override

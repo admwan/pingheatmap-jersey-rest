@@ -1,7 +1,6 @@
 package net.spikesync.webapp;
 
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -12,11 +11,13 @@ import jakarta.servlet.ServletContext;
 
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
-import net.spikesync.pingerdaemonrabbitmqclient.PingMsgReaderRunnable;
 import net.spikesync.pingerdaemonrabbitmqclient.PropertiesLoader;
 
+import net.spikesync.pingerdaemonrabbitmqclient.PingMsgReaderRunnable;
+import net.spikesync.pingerdaemonrabbitmqclient.CoolDownRunnable;
+
+
 import org.apache.catalina.Executor;
-import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleState;
 import org.apache.catalina.core.StandardServer;
 import org.apache.catalina.core.StandardService;
@@ -32,14 +33,22 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
 
-		ServletContext servletContext = sce.getServletContext();
-		PingMsgReaderRunnable pingMsgReaRunnable = new PingMsgReaderRunnable(servletContext);
 
 		/*
-		 * Set an attribute in the ServletContext in order to get access to the
-		 * runnable, in this case to the PingHeatMap.
+		 * Create the Runnables for the tasks that work on the PingHeatMap.
+		 */
+		ServletContext servletContext = sce.getServletContext();
+		PingMsgReaderRunnable pingMsgReaRunnable = new PingMsgReaderRunnable(servletContext);
+		CoolDownRunnable coolDownRunnable = new CoolDownRunnable(servletContext);
+		
+
+		/*
+		 * Set the attribute in the ServletContext in order to get access to the
+		 * runnables: PingHeatMap reader task and the cooldown task.
 		 */
 		servletContext.setAttribute("pingMessageReaderTask", pingMsgReaRunnable);
+		servletContext.setAttribute("coolDownTask", coolDownRunnable);
+		
 
 		PropertiesLoader propLoader = new PropertiesLoader(servletContext);
 		Properties prop = propLoader.loadProperties();
@@ -56,19 +65,9 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 		}
         
 		ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-		
-		//executorService.submit(pingMessageReaderTask);
-
-		
 		servletContext.setAttribute("pingHeatMapExecutor", executorService);
-		
-		ExecutorService dummyExecutor = (ExecutorService) servletContext.getAttribute("pingHeatMapExecutor");
-		
-		logger.debug("ExecutorService info: " + dummyExecutor.toString());
-		
-		
 
-        /*-
+		/*-
 		if (executor != null) {
 			lifecycleState = executor.getState();
 			logger.debug("LifecycleState of org.apache.catalina.Executor this.executor: " + lifecycleState.toString());
