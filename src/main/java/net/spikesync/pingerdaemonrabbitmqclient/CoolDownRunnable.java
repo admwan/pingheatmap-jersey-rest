@@ -20,12 +20,7 @@ public class CoolDownRunnable implements Runnable {
 		// Obtain the Spring application context from the servlet context
 		logger.debug("In constructor-CoolDownRunnable");
 		this.context = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-		this.pingMsgReader = this.context.getBean(PingMsgReader.class);
-		if (this.pingMsgReader != null) {
-			logger.debug("PingMsgReader initialized as: " + this.pingMsgReader.toString());
-		} else
-			logger.debug("PingMsgReader NOT initialized!");
-
+		// The CoolDown service only needs the PingHeatmap, and doesn't read messages from the queue, unlike the PingMessage update service)
 		this.pingHeatMap = this.context.getBean(PingHeatMap.class);
 
 	}
@@ -41,7 +36,8 @@ public class CoolDownRunnable implements Runnable {
 				}
 
 				logger.debug("Method run() executed in CoolDownRunnable -- output from LOGGER");
-				coolDownPingHeatMap();
+				this.pingHeatMap.coolDownPingHeat();
+				Thread.sleep(500);
 			}
 		} catch (InterruptedException e) {
 			logger.debug("Task readRmqAndUpdatePingHeatMap was INTERRUPTED, stopping thread!!!!!!!!!!!!!!!");
@@ -50,16 +46,7 @@ public class CoolDownRunnable implements Runnable {
 		}
 	}
 
-	public void coolDownPingHeatMap() {
-		logger.debug("Enterning CoolDownRunnable.coolDownPingHeatMap()");
-		// In this project everything needed by PingMsgReader is injected at
-		// bean-construction time, so it is ready to be used!
-		boolean connectionEstablished;
-		connectionEstablished = this.pingMsgReader.connectPingMQ();
-		if (connectionEstablished) {
-			this.pingHeatMap.coolDownPingHeat();
-		}
-	}
+
 	/*
 	 * A method to access the Ping Heatmap, for e.g., displaying it in in a webpage
 	 */

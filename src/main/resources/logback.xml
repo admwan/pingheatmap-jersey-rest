@@ -23,11 +23,16 @@
 
 	<logger
 		name="net.spikesync.pingerdaemonrabbitmqclient.PingHeatMap">
+		<level value="INFO" />
+	</logger>
+
+	<logger
+		name="net.spikesync.pingerdaemonrabbitmqclient.CoolDownRunnable">
 		<level value="DEBUG" />
 	</logger>
 
 	<logger
-		name="net.spikesync.webapp.CoolDownRunnable">
+		name="net.spikesync.webapp.CoolDownServlet">
 		<level value="DEBUG" />
 	</logger>
 

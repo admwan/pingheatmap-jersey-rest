@@ -49,6 +49,13 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 		servletContext.setAttribute("pingMessageReaderTask", pingMsgReaRunnable);
 		servletContext.setAttribute("coolDownTask", coolDownRunnable);
 		
+		ScheduledExecutorService piHeMaexecutorService = Executors.newScheduledThreadPool(1);
+		servletContext.setAttribute("pingHeatMapExecutor", piHeMaexecutorService);
+
+		ScheduledExecutorService coolDownexecutorService = Executors.newScheduledThreadPool(1);
+		servletContext.setAttribute("coolDownExecutorService", coolDownexecutorService);
+
+
 
 		PropertiesLoader propLoader = new PropertiesLoader(servletContext);
 		Properties prop = propLoader.loadProperties();
@@ -64,9 +71,6 @@ public class PingHeatAppThreadContextListener implements ServletContextListener 
 
 		}
         
-		ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-		servletContext.setAttribute("pingHeatMapExecutor", executorService);
-
 		/*-
 		if (executor != null) {
 			lifecycleState = executor.getState();

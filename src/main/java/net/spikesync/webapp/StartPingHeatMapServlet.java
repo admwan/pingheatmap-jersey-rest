@@ -127,12 +127,14 @@ public class StartPingHeatMapServlet extends HttpServlet {
 	}
 
 	public void destroy() {
-		logger.debug("DummyServlet is being destroyed");
+		logger.debug("StartPingheatMapServlet is being destroyed");
 
 	}
 }
 
-/*- The LifecyleState based logic is not applicable to ScheluedExecutorService
+/*- The LifecyleState based logic is not applicable to ScheduledExecutorService.
+ * This is code from a previous iteration when made use of Executor instead of ExecutorService.
+ * ExecutorService has many advantages over the Executor class.
 
 LifecycleState lifecycleState = null;
 
