@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -34,6 +35,11 @@ public class PingMsgReaderRunnable implements Runnable {
 		this.pingHeatMap = this.context.getBean(PingHeatMap.class);
 	} */
 	
+	
+	/* In the constructor below the required objects of PingMsgReader and PingHeatMap are instatinated from the
+	 * ServletContext. In the next iteration, the dependencies are specified in the configurationfile beans.xml 
+	 * 
+	 */ 
 	    public PingMsgReaderRunnable(ServletContext servletContext) {
 	        // Obtain the Spring application context from the servlet context
 	    	logger.debug("In constructor-PingMsgReaderRunnable");
@@ -46,8 +52,14 @@ public class PingMsgReaderRunnable implements Runnable {
 
 			this.pingHeatMap = this.context.getBean(PingHeatMap.class);
 
-	    }
+	    } 
+	    
 
+/*	public PingMsgReaderRunnable(PingMsgReader pMsgR, PingHeatMap pHeMa) {
+		this.pingMsgReader = pMsgR;
+		this.pingHeatMap = pHeMa;
+	}
+	*/
 	@Override
 	public void run() {
 		try {
