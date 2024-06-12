@@ -45,7 +45,24 @@
 		<entry key="ASGAFS" value="192.168.50.119" />
 	</util:map>
 
+   <!-- Define the XmlMapper bean FOR XML MAPPING!!!
+    <bean id="xmlMapper" class="com.fasterxml.jackson.dataformat.xml.XmlMapper"/>
+-->
+   
+    <!-- Define the ObjectMapper bean -->
+    <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper"/>
 
+
+    <!-- Define the MappingJackson2HttpMessageConverter bean -->
+    <bean id="jsonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <constructor-arg ref="objectMapper"/>
+    </bean>
+
+    <!-- Define the MappingJackson2XmlHttpMessageConverter bean THIS ONE IS FOR XML MAPPING !!!! 
+    <bean id="xmlHttpMessageConverter" class="org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter">
+        <constructor-arg ref="xmlMapper"/>
+    </bean>
+-->
 
 	<rabbit:connection-factory
 		id="connectionFactory" 

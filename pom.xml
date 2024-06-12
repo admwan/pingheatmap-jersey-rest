@@ -315,8 +315,22 @@
 			<artifactId>spring-web</artifactId>
 			<version>6.1.7</version>
 		</dependency>
+		<!--
+		https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+			<version>2.17.1</version>
+		</dependency>
 
-
+		<!-- JE HEBT ALLEEN DE BOVENSTAANDE DEPENDENCY NODIG !!!
+		https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core 
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.17.1</version>
+		</dependency>
+-->
 		<dependency>
 			<groupId>org.glassfish.jersey.containers</groupId>
 			<artifactId>jersey-container-servlet-core</artifactId>
