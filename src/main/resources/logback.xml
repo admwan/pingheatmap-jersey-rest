@@ -28,7 +28,7 @@
 
 	<logger
 		name="net.spikesync.pingerdaemonrabbitmqclient.CoolDownRunnable">
-		<level value="DEBUG" />
+		<level value="INFO" />
 	</logger>
 
 	<logger
