@@ -37,9 +37,7 @@
  -->
 
 	<util:map id="fedskyNodeIpMap" map-class="java.util.HashMap"
-		key-type="java.lang.String" value-type="java.lang.String">
-		<entry key="ALPINE" value="192.168.50.225" />
-		<entry key="WEISSE" value="192.168.50.226" />
+			key-type="java.lang.String" value-type="java.lang.String">
 		<entry key="APOLLO" value="192.168.50.227" />
 		<entry key="BELYTA" value="192.168.50.228" />
 		<entry key="CICADE" value="192.168.50.229" />
@@ -49,10 +47,9 @@
 		<entry key="WITOOG" value="192.168.50.233" />
 		<entry key="ZEEVLO" value="192.168.50.234" />
 	</util:map>
-
- 
+	
 	<util:map id="scNodeIpMap" map-class="java.util.HashMap"
-		key-type="java.lang.String" value-type="java.lang.String">
+			key-type="java.lang.String" value-type="java.lang.String">
 		<entry key="SURFIE" value="192.168.50.100" />
 		<entry key="CAPTUW" value="192.168.50.104" />
 		<entry key="THORFW" value="192.168.50.107" />
@@ -61,6 +58,13 @@
 		<entry key="HYDRFS" value="192.168.50.116" />
 		<entry key="ASGAFS" value="192.168.50.119" />
 	</util:map>
+
+	<util:map id="alpineContMap" map-class="java.util.Hashap"
+			key-type="java.lang.String" value-type="java.lang.String">
+		<entry key="ALPINE" value="192.168.50.225" />
+		<entry key="WEISSE" value="192.168.50.226" />
+	</util:map>
+	
 
    <!-- Define the XmlMapper bean FOR XML MAPPING!!!
     <bean id="xmlMapper" class="com.fasterxml.jackson.dataformat.xml.XmlMapper"/>
