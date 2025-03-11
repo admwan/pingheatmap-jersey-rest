@@ -13,7 +13,9 @@
 	http://www.springframework.org/schema/rabbit https://www.springframework.org/schema/rabbit/spring-rabbit.xsd">
 
 	<bean id="silverCloud" class="net.spikesync.pingerdaemonrabbitmqclient.SilverCloud">
-		<constructor-arg ref="scNodeIpMap" />
+		<!--		<constructor-arg ref="scNodeIpMap" />    --> 
+		<constructor-arg ref="fedskyNodeIpMap" />
+		
 	</bean>
 	
 	<bean id="pingHeatMap" class="net.spikesync.pingerdaemonrabbitmqclient.PingHeatMap">
@@ -33,6 +35,21 @@
 		<constructor-arg index = "1" ref="pingHeatMap"/>
 	</bean>
  -->
+
+	<util:map id="fedskyNodeIpMap" map-class="java.util.HashMap"
+		key-type="java.lang.String" value-type="java.lang.String">
+		<entry key="ALPINE" value="192.168.50.225" />
+		<entry key="WEISSE" value="192.168.50.226" />
+		<entry key="APOLLO" value="192.168.50.227" />
+		<entry key="BELYTA" value="192.168.50.228" />
+		<entry key="CICADE" value="192.168.50.229" />
+		<entry key="HOMMEL" value="192.168.50.230" />
+		<entry key="KREKEL" value="192.168.50.231" />
+		<entry key="OERMOT" value="192.168.50.232" />
+		<entry key="WITOOG" value="192.168.50.233" />
+		<entry key="ZEEVLO" value="192.168.50.234" />
+	</util:map>
+
  
 	<util:map id="scNodeIpMap" map-class="java.util.HashMap"
 		key-type="java.lang.String" value-type="java.lang.String">
