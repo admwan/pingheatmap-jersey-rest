@@ -59,13 +59,15 @@
 		<entry key="ASGAFS" value="192.168.50.119" />
 	</util:map>
 
+<!-- 
 	<util:map id="alpineContMap" map-class="java.util.Hashap"
 			key-type="java.lang.String" value-type="java.lang.String">
 		<entry key="ALPINE" value="192.168.50.225" />
 		<entry key="WEISSE" value="192.168.50.226" />
 	</util:map>
 	
-
+ -->
+ 
    <!-- Define the XmlMapper bean FOR XML MAPPING!!!
     <bean id="xmlMapper" class="com.fasterxml.jackson.dataformat.xml.XmlMapper"/>
 -->
