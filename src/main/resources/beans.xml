@@ -84,12 +84,23 @@
     </bean>
 -->
 
-	<rabbit:connection-factory
+	<!-- 
+		<rabbit:connection-factory
 		id="connectionFactory" 
 		virtual-host="SilverSurfieRMQH"
 		username="thor"
 		password="7{3>d7Tg0dMA"
 		host="192.168.50.107"
+		port="5672" />
+	
+	 -->
+
+	<rabbit:connection-factory
+		id="connectionFactory" 
+		virtual-host="FedskyMQ"
+		username="cloudman"
+		password="7{3>d7Tg0dMA"
+		host="192.168.50.200"
 		port="5672" />
 
 	<rabbit:template id="amqpTemplate"
