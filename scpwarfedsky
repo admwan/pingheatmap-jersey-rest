@@ -1,0 +1,1 @@
+scp -i ~/.ssh/id_ed25519 target/pingheatmap-jersey-rest-1.0-SNAPSHOT.war root@192.168.50.200:/opt/apache-tomcat-10.1.23/webapps/
